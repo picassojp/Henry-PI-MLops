@@ -12,15 +12,15 @@ app = FastAPI()
 # df_movies = pd.read_csv(r'Datasets/movies_dataset_v2.csv', sep = ',', header = 0, parse_dates=["release_date"])
 #df_movies = pd.read_csv(r'Datasets/movies_dataset_v2.csv', sep = ',', header = 0, usecols=['id', 'title', 'release_date', 'cast', 'director', 'overview', 'popularity', 'vote_average', 'vote_count', 'return', 'release_year', 'budget', 'revenue'], parse_dates=["release_date"])
 
-df_movies_mesydia = pd.read_csv(r'/Datasets/movies_dataset_v2_mesydia.csv', sep = ',', header = 0, parse_dates=["release_date"])
-df_movies_score = pd.read_csv(r'/Datasets/movies_dataset_v2_score.csv', sep = ',', header = 0, parse_dates=["release_date"])
-df_movies_votos = pd.read_csv(r'/Datasets/movies_dataset_v2_votos.csv', sep = ',', header = 0, parse_dates=["release_date"])
-df_movies_actor = pd.read_csv(r'/Datasets/movies_dataset_v2_actor.csv', sep = ',', header = 0)
-df_movies_director = pd.read_csv(r'/Datasets/movies_dataset_v2_director.csv', sep = ',', header = 0)
+df_movies_mesydia = pd.read_csv(r'Datasets/movies_dataset_v2_mesydia.csv', sep = ',', header = 0, parse_dates=["release_date"])
+df_movies_score = pd.read_csv(r'Datasets/movies_dataset_v2_score.csv', sep = ',', header = 0, parse_dates=["release_date"])
+df_movies_votos = pd.read_csv(r'Datasets/movies_dataset_v2_votos.csv', sep = ',', header = 0, parse_dates=["release_date"])
+df_movies_actor = pd.read_csv(r'Datasets/movies_dataset_v2_actor.csv', sep = ',', header = 0)
+df_movies_director = pd.read_csv(r'Datasets/movies_dataset_v2_director.csv', sep = ',', header = 0)
 df_movies_director=df_movies_director.loc[-df_movies_director.director.isna()]
-df_movies_recs = pd.read_csv(r'/Datasets/movies_dataset_v2_recs.csv', sep = ',', header = 0)
-# Funciones 
+df_movies_recs = pd.read_csv(r'Datasets/movies_dataset_v2_recs.csv', sep = ',', header = 0)
 
+# Funciones 
 @app.get('/') #ruta raíz
 def get_root():
     return 'API para consulta de datos de películas'
@@ -177,10 +177,10 @@ def get_actor(nombre_actor:str):
     #                 break
     #     else:
     #         break
-    cant = int(df_movies_actor.loc[df_movies_actor.cast.str.contains(id),"id"].shape[0])
+    cant = int(df_movies_actor.loc[df_movies_actor.cast==id,"id"].shape[0])
     # cant = int(df_movies.loc[df_movies.cast.str.lower().str.contains(nombre_actor),"id"].shape[0])
-    retorno_total = float(df_movies_actor.loc[df_movies_actor.cast.str.contains(id),"return"].sum().round(2))
-    retorno_prom = float(df_movies_actor.loc[df_movies_actor.cast.str.contains(id),"return"].mean().round(2))
+    retorno_total = float(df_movies_actor.loc[df_movies_actor.cast==id,"return"].sum().round(2))
+    retorno_prom = float(df_movies_actor.loc[df_movies_actor.cast== id,"return"].mean().round(2))
     
     if cant is None:
         return f'No fue posible encontrar películas del actor "{nombre_actor}" en nuestra base de datos. Verificar si es correcto o probar con un nombre alternativo en español.'
@@ -207,9 +207,9 @@ def get_director(nombre_director:str):
     df_peliculas = df_director.loc[df_director.director == nombre_director,["title", "release_year", "return", "budget", "revenue", "director"]].head(5).sort_values(by="release_year", ascending=False) #se limita la cantidad de peliculas
     
     #se pasan las variables a formato lista
-    peliculas = df_peliculas.title.tolist() 
+    peliculas = df_peliculas.title.tolist()
     anios = df_peliculas.release_year.tolist()
-    retornos = df_peliculas['return'].tolist() 
+    retornos = df_peliculas['return'].tolist()
     budget = df_peliculas.budget.tolist()
     revenue = df_peliculas.revenue.tolist()
     
