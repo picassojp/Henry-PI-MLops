@@ -1,0 +1,12 @@
+#entorno virtural se ignora para subir el repo
+.venv/
+
+# archivos 
+prueba_2.ipynb
+prueba.py
+__pycache__/main.cpython-310.pyc
+Datasets/Originales/credits.csv
+Datasets/Originales/movies_dataset_v2.csv
+Datasets/Originales/movies_dataset.csv
+Datasets/Originales/movies_dataset.xlsx
+henry-PI-MLOps.code-workspace
