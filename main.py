@@ -10,8 +10,15 @@ app = FastAPI()
 
 # Se carga el df con los datos de las peliculas
 # df_movies = pd.read_csv(r'Datasets/movies_dataset_v2.csv', sep = ',', header = 0, parse_dates=["release_date"])
-df_movies = pd.read_csv(r'Datasets/movies_dataset_v2.csv', sep = ',', header = 0, usecols=['id', 'title', 'release_date', 'cast', 'director', 'overview', 'popularity', 'vote_average', 'vote_count', 'return', 'release_year', 'budget', 'revenue'], parse_dates=["release_date"])
+#df_movies = pd.read_csv(r'Datasets/movies_dataset_v2.csv', sep = ',', header = 0, usecols=['id', 'title', 'release_date', 'cast', 'director', 'overview', 'popularity', 'vote_average', 'vote_count', 'return', 'release_year', 'budget', 'revenue'], parse_dates=["release_date"])
 
+df_movies_mesydia = pd.read_csv(r'/Datasets/movies_dataset_v2_mesydia.csv', sep = ',', header = 0, parse_dates=["release_date"])
+df_movies_score = pd.read_csv(r'/Datasets/movies_dataset_v2_score.csv', sep = ',', header = 0, parse_dates=["release_date"])
+df_movies_votos = pd.read_csv(r'/Datasets/movies_dataset_v2_votos.csv', sep = ',', header = 0, parse_dates=["release_date"])
+df_movies_actor = pd.read_csv(r'/Datasets/movies_dataset_v2_actor.csv', sep = ',', header = 0)
+df_movies_director = pd.read_csv(r'/Datasets/movies_dataset_v2_director.csv', sep = ',', header = 0)
+df_movies_director=df_movies_director.loc[-df_movies_director.director.isna()]
+df_movies_recs = pd.read_csv(r'/Datasets/movies_dataset_v2_recs.csv', sep = ',', header = 0)
 # Funciones 
 
 @app.get('/') #ruta raíz
@@ -56,7 +63,7 @@ def cantidad_filmaciones_mes(mes:str):
             #     return print("Ingrese el nombre del mes que desea consultar. Ejemplo: 'julio'.")
     
     n_mes = mes_to_numero(mes)
-    cant = int(df_movies[df_movies.release_date.dt.month == n_mes].id.count())
+    cant = int(df_movies_mesydia[df_movies_mesydia.release_date.dt.month == n_mes].id.count())
       
     return {'mes': mes, 'cantidad': cant}  
     # return f'{str(df_movies[df_movies.release_date.dt.month == mes_to_numero(mes)].id.count())} películas se estrenaron en el mes de {mes}'
@@ -90,7 +97,7 @@ def cantidad_filmaciones_dia(dia:str):
         # else:
         #     return print("Ingrese el nombre del día que desea consultar. Ejemplo: 'martes'.")
     n_dia = eng_day(dia)
-    cant = int(df_movies[df_movies.release_date.dt.weekday == n_dia].shape[0])
+    cant = int(df_movies_mesydia[df_movies_mesydia.release_date.dt.weekday == n_dia].shape[0])
     # return f'{str(df_movies[df_movies.release_date.dt.weekday == eng_day(dia)].shape[0])} películas se estrenaron en un día {dia}'
     return {'dia': dia, 'cantidad': cant}
 
@@ -104,7 +111,7 @@ def score_titulo(titulo:str):
         titulo = titulo.lower() #se pasa a minuscula
     else:
         return f'No fue posible encontrar el título {str(titulo)} en nuestra base de datos. Verificar si es correcto o probar con un título alternativo en español.'
-    df_score = df_movies.loc[df_movies.title.str.lower().str.contains(titulo),["title", "release_year", "popularity"]].iloc[0]
+    df_score = df_movies_score.loc[df_movies_score.title.str.lower().str.contains(titulo),["title", "release_year", "popularity"]].iloc[0]
     print(df_score)
     titulo = str(df_score.title)
     anio = int(df_score.release_year)
@@ -126,7 +133,7 @@ def votos_titulo(titulo:str):
     else:
         return f'No fue posible encontrar el título {titulo} en nuestra base de datos. Verificar si es correcto o probar con un título alternativo en español.'
     
-    df_votos = df_movies.loc[df_movies.title.str.lower().str.contains(titulo),["title", "release_year", "vote_average", "vote_count"]].iloc[0]
+    df_votos = df_movies_votos.loc[df_movies_votos.title.str.lower().str.contains(titulo),["title", "release_year", "vote_average", "vote_count"]].iloc[0]
     
     titulo = str(df_votos.title)
     anio = int(df_votos["release_year"])
@@ -152,24 +159,28 @@ def get_actor(nombre_actor:str):
     else:
         return f'No fue posible encontrar el actor "{nombre_actor}" en nuestra base de datos. Verificar si es correcto o probar con un nombre alternativo en español.'
     
-    df_actor = df_movies.loc[df_movies.cast.str.lower().str.contains(nombre_actor),"cast"] #se crea un df con las coincidencias en el reparto de la película
-    q = True
-    # se recorre el df hasta encontrar a un actor con un nombre similar al consultado
-    for row in df_actor:
-        if q:
-            fila_actor = ast.literal_eval(row)
-            #print(fila_actor)
-            for actor in fila_actor:
-                if nombre_actor in actor['name'].lower():
-                    nombre_actor = actor['name']
-                    q=False
-                    break
-        else:
-            break
-    cant = int(df_movies.loc[df_movies.cast.str.contains(nombre_actor),"id"].shape[0])
+    df_actor = df_movies_actor.loc[df_movies_actor.cast.str.lower().str.contains(nombre_actor),"cast"] #se crea un df con las coincidencias en el reparto de la película
+    fila = ast.literal_eval(df_movies_actor.loc[df_movies_actor.actor.str.lower().str.contains('hanks'),"actor"][0])
+    for i in fila:
+        if nombre_actor in i.lower():
+            id = i
+    # q = True
+    # # se recorre el df hasta encontrar a un actor con un nombre similar al consultado
+    # for row in df_actor:
+    #     if q:
+    #         fila_actor = ast.literal_eval(row)
+    #         #print(fila_actor)
+    #         for actor in fila_actor:
+    #             if nombre_actor in actor['name'].lower():
+    #                 nombre_actor = actor['name']
+    #                 q=False
+    #                 break
+    #     else:
+    #         break
+    cant = int(df_movies_actor.loc[df_movies_actor.cast.str.contains(id),"id"].shape[0])
     # cant = int(df_movies.loc[df_movies.cast.str.lower().str.contains(nombre_actor),"id"].shape[0])
-    retorno_total = float(df_movies.loc[df_movies.cast.str.contains(nombre_actor),"return"].sum().round(2))
-    retorno_prom = float(df_movies.loc[df_movies.cast.str.contains(nombre_actor),"return"].mean().round(2))
+    retorno_total = float(df_movies_actor.loc[df_movies_actor.cast.str.contains(id),"return"].sum().round(2))
+    retorno_prom = float(df_movies_actor.loc[df_movies_actor.cast.str.contains(id),"return"].mean().round(2))
     
     if cant is None:
         return f'No fue posible encontrar películas del actor "{nombre_actor}" en nuestra base de datos. Verificar si es correcto o probar con un nombre alternativo en español.'
@@ -187,7 +198,7 @@ def get_director(nombre_director:str):
     else:
         return f'No fue posible encontrar el director "{nombre_director}" en nuestra base de datos. Verificar si es correcto o probar con un nombre alternativo en español.'
     
-    df_director = df_movies.loc[-df_movies.director.isna()]
+    df_director = df_movies_director.loc[-df_movies_director.director.isna()]
     
     nombre_director = str(df_director.loc[df_director.director.str.lower().str.contains(nombre_director),"director"].iloc[0]) #se obtiene el nombre del director
     cant = int(df_director.loc[df_director.director==nombre_director,"id"].shape[0]) #se revisa la cantidad de registros de ese director
@@ -210,7 +221,7 @@ def get_director(nombre_director:str):
 
 
 #Para la siguiente función se utiliza un df reducido para reducir los tiempos de procesamiento
-df_sample = df_movies[df_movies.popularity>1.130300].copy()
+df_sample = df_movies_recs[df_movies_recs.popularity>1.130300].copy()
 
 # se procede a vectorizar la variable de interés "overview"
 tfidf = TfidfVectorizer(stop_words='english')
