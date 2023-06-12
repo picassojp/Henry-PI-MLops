@@ -183,26 +183,13 @@ def get_actor(nombre_actor:str):
     else:
         return f'No fue posible encontrar el actor "{nombre_actor}" en nuestra base de datos. Verificar si es correcto o probar con un nombre alternativo en español.'
     
-    #df_actor = df_movies_actor.loc[df_movies_actor.actor.str.lower().str.contains(nombre_actor),"cast"] #se crea un df con las coincidencias en el reparto de la película
-    fila = ast.literal_eval(df_movies_actor.loc[df_movies_actor.actor.str.lower().str.contains(nombre_actor),"actor"][0])
+    fila = ast.literal_eval(df_movies_actor.loc[df_movies_actor.actor.str.lower().str.contains(nombre_actor),"actor"].iloc[0])
     for i in fila:
         if nombre_actor in i.lower():
             id = i
-    # q = True
-    # # se recorre el df hasta encontrar a un actor con un nombre similar al consultado
-    # for row in df_actor:
-    #     if q:
-    #         fila_actor = ast.literal_eval(row)
-    #         #print(fila_actor)
-    #         for actor in fila_actor:
-    #             if nombre_actor in actor['name'].lower():
-    #                 nombre_actor = actor['name']
-    #                 q=False
-    #                 break
-    #     else:
-    #         break
+            print(id)
+    
     cant = int(df_movies_actor.loc[df_movies_actor.actor.str.lower().str.contains(nombre_actor),"id"].shape[0])
-    # cant = int(df_movies.loc[df_movies.cast.str.lower().str.contains(nombre_actor),"id"].shape[0])
     retorno_total = float(df_movies_actor.loc[df_movies_actor.actor.str.lower().str.contains(nombre_actor),"return"].sum().round(2))
     retorno_prom = float(df_movies_actor.loc[df_movies_actor.actor.str.lower().str.contains(nombre_actor),"return"].mean().round(2))
     
