@@ -186,17 +186,15 @@ def get_actor(nombre_actor:str):
     fila = ast.literal_eval(df_movies_actor.loc[df_movies_actor.actor.str.lower().str.contains(nombre_actor),"actor"].iloc[0])
     for i in fila:
         if nombre_actor in i.lower():
-            id = i
-            print(id)
-    
-    cant = int(df_movies_actor.loc[df_movies_actor.actor.str.lower().str.contains(nombre_actor),"id"].shape[0])
-    retorno_total = float(df_movies_actor.loc[df_movies_actor.actor.str.lower().str.contains(nombre_actor),"return"].sum().round(2))
-    retorno_prom = float(df_movies_actor.loc[df_movies_actor.actor.str.lower().str.contains(nombre_actor),"return"].mean().round(2))
+            nombre_actor = i
+            print(nombre_actor)
+    cant = int(df_movies_actor.loc[df_movies_actor.actor.str.contains(nombre_actor),"id"].shape[0])
+    retorno_total = float(df_movies_actor.loc[df_movies_actor.actor.str.contains(nombre_actor),"return"].sum().round(2))
+    retorno_prom = float(df_movies_actor.loc[df_movies_actor.actor.str.contains(nombre_actor),"return"].mean().round(2))
     
     if cant is None:
         return f'No fue posible encontrar películas del actor "{nombre_actor}" en nuestra base de datos. Verificar si es correcto o probar con un nombre alternativo en español.'
     else:
-        #return f'El actor "{nombre_actor}" ha participado en {cant} películas. El retorno conseguido por estas películas alcanza el valor de {retorno_total}, resultando en un retorno promedio de {retorno_prom} por película.'
         return {'actor': nombre_actor, 'cantidad_filmaciones': cant, 'retorno_total': retorno_total, 'retorno_promedio': retorno_prom}
 
 @app.get("/get_director/{nombre_director}")
