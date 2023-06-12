@@ -37,8 +37,8 @@ app = FastAPI(
 #df_movies = pd.read_csv(r'Datasets/movies_dataset_v2.csv', sep = ',', header = 0, usecols=['id', 'title', 'release_date', 'cast', 'director', 'overview', 'popularity', 'vote_average', 'vote_count', 'return', 'release_year', 'budget', 'revenue'], parse_dates=["release_date"])
 
 df_movies_mesydia = pd.read_csv(r'Datasets/movies_dataset_v2_mesydia.csv', sep = ',', header = 0, parse_dates=["release_date"])
-df_movies_score = pd.read_csv(r'Datasets/movies_dataset_v2_score.csv', sep = ',', header = 0, parse_dates=["release_date"])
-df_movies_votos = pd.read_csv(r'Datasets/movies_dataset_v2_votos.csv', sep = ',', header = 0, parse_dates=["release_date"])
+df_movies_score = pd.read_csv(r'Datasets/movies_dataset_v2_score.csv', sep = ',', header = 0)
+df_movies_votos = pd.read_csv(r'Datasets/movies_dataset_v2_votos.csv', sep = ',', header = 0)
 df_movies_actor = pd.read_csv(r'Datasets/movies_dataset_v2_actor.csv', sep = ',', header = 0)
 df_movies_director = pd.read_csv(r'Datasets/movies_dataset_v2_director.csv', sep = ',', header = 0)
 df_movies_director=df_movies_director.loc[-df_movies_director.director.isna()]
@@ -158,7 +158,6 @@ def votos_titulo(titulo:str):
         return f'No fue posible encontrar el título {titulo} en nuestra base de datos. Verificar si es correcto o probar con un título alternativo en español.'
     
     df_votos = df_movies_votos.loc[df_movies_votos.title.str.lower().str.contains(titulo),["title", "release_year", "vote_average", "vote_count"]].iloc[0]
-    
     titulo = str(df_votos.title)
     anio = int(df_votos["release_year"])
     voto_promedio = float(df_votos.vote_average.round(2))
