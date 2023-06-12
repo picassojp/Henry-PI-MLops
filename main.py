@@ -4,10 +4,34 @@ from datetime import datetime
 from fastapi import FastAPI
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
+import joblib
 import ast 
 
-app = FastAPI()
+#app = FastAPI()
+description = """
+Este sistema de recomendación de películas permite conocer los títulos. 🚀
 
+## Items
+
+
+## Users
+
+You will be able to:
+
+* **Create users** (_not implemented_).
+* **Read users** (_not implemented_).
+"""
+
+app = FastAPI(
+    title="Sistema de Recomendación de Películas",
+    description=description,
+    version="0.0.1",
+    contacto={
+        "name": "Juan Pablo Picasso",
+        "GitHub": "https://github.com/picassojp",
+        "email": "picassojuanpablo@gmail.com",
+    },
+)
 # Se carga el df con los datos de las peliculas
 # df_movies = pd.read_csv(r'Datasets/movies_dataset_v2.csv', sep = ',', header = 0, parse_dates=["release_date"])
 #df_movies = pd.read_csv(r'Datasets/movies_dataset_v2.csv', sep = ',', header = 0, usecols=['id', 'title', 'release_date', 'cast', 'director', 'overview', 'popularity', 'vote_average', 'vote_count', 'return', 'release_year', 'budget', 'revenue'], parse_dates=["release_date"])
@@ -159,8 +183,8 @@ def get_actor(nombre_actor:str):
     else:
         return f'No fue posible encontrar el actor "{nombre_actor}" en nuestra base de datos. Verificar si es correcto o probar con un nombre alternativo en español.'
     
-    df_actor = df_movies_actor.loc[df_movies_actor.cast.str.lower().str.contains(nombre_actor),"cast"] #se crea un df con las coincidencias en el reparto de la película
-    fila = ast.literal_eval(df_movies_actor.loc[df_movies_actor.actor.str.lower().str.contains('hanks'),"actor"][0])
+    #df_actor = df_movies_actor.loc[df_movies_actor.actor.str.lower().str.contains(nombre_actor),"cast"] #se crea un df con las coincidencias en el reparto de la película
+    fila = ast.literal_eval(df_movies_actor.loc[df_movies_actor.actor.str.lower().str.contains(nombre_actor),"actor"][0])
     for i in fila:
         if nombre_actor in i.lower():
             id = i
@@ -177,10 +201,10 @@ def get_actor(nombre_actor:str):
     #                 break
     #     else:
     #         break
-    cant = int(df_movies_actor.loc[df_movies_actor.cast==id,"id"].shape[0])
+    cant = int(df_movies_actor.loc[df_movies_actor.actor.str.lower().str.contains(nombre_actor),"id"].shape[0])
     # cant = int(df_movies.loc[df_movies.cast.str.lower().str.contains(nombre_actor),"id"].shape[0])
-    retorno_total = float(df_movies_actor.loc[df_movies_actor.cast==id,"return"].sum().round(2))
-    retorno_prom = float(df_movies_actor.loc[df_movies_actor.cast== id,"return"].mean().round(2))
+    retorno_total = float(df_movies_actor.loc[df_movies_actor.actor.str.lower().str.contains(nombre_actor),"return"].sum().round(2))
+    retorno_prom = float(df_movies_actor.loc[df_movies_actor.actor.str.lower().str.contains(nombre_actor),"return"].mean().round(2))
     
     if cant is None:
         return f'No fue posible encontrar películas del actor "{nombre_actor}" en nuestra base de datos. Verificar si es correcto o probar con un nombre alternativo en español.'
@@ -220,33 +244,11 @@ def get_director(nombre_director:str):
         return {'director': nombre_director, 'retorno_total_director': retorno_total, 'peliculas': peliculas, 'anio': anios, 'retorno_pelicula': retornos,'budget_pelicula':budget,'revenue_pelicula':revenue}
 
 
-#Para la siguiente función se utiliza un df reducido para reducir los tiempos de procesamiento
-df_sample = df_movies_recs[df_movies_recs.popularity>1.130300].copy()
-
-# se procede a vectorizar la variable de interés "overview"
-tfidf = TfidfVectorizer(stop_words='english')
-#df_sample['overview'] = df_sample['overview'].fillna('')
-df_sample['overview'].fillna('', inplace=True)
-
-tfidf_matrix = tfidf.fit_transform(df_sample['overview'])
-cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
-
-indices = pd.Series(df_sample.index, index=df_sample['title']).drop_duplicates()
-
-def get_recommendations(title:str, cosine_sim=cosine_sim):
-    title = title.lower()
-    idx = indices[indices.index.str.lower().str.contains(title)][0]
-    print(idx)
-    sim_scores = list(enumerate(cosine_sim[idx]))
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-    sim_scores = sim_scores[1:6]
-    movie_indices = [i[0] for i in sim_scores]
-    return df_sample['title'].iloc[movie_indices]
-
-@app.get("/recomendaciones/{titulo}")
-def recomendaciones(titulo:str):
-    recs = get_recommendations(titulo).tolist()
-    return {'recomendaciones': recs}
+@app.get("/recomendacion/{titulo}")
+def recomendacion(titulo:str):
+    recs = df_movies_recs.loc[df_movies_recs.title.str.lower().str.contains(titulo), 'recs'].iloc[0]
+    recs = ast.literal_eval(recs)
+    return {'lista recomendada': recs}
  
 # Deta Details
 """

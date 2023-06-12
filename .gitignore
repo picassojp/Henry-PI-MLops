@@ -10,3 +10,5 @@ Datasets/Originales/movies_dataset_v2.csv
 Datasets/Originales/movies_dataset.csv
 Datasets/Originales/movies_dataset.xlsx
 henry-PI-MLOps.code-workspace
+matriz_coseno.py
+cosine_sim.pkl
