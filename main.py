@@ -9,17 +9,8 @@ import ast
 
 #app = FastAPI()
 description = """
-Este sistema de recomendación de películas permite conocer los títulos. 🚀
-
-## Items
-
-
-## Users
-
-You will be able to:
-
-* **Create users** (_not implemented_).
-* **Read users** (_not implemented_).
+Este sistema permite realizar diversas consultas sobre películas, actores y directores, y, además, es posible
+solicitar recomendaciones a partir de una película en particular. 🚀
 """
 
 app = FastAPI(
@@ -33,13 +24,13 @@ app = FastAPI(
     },
 )
 
-df_movies_mesydia = pd.read_csv(r'Datasets/movies_dataset_v2_mesydia.csv', sep = ',', header = 0, parse_dates=["release_date"])
-df_movies_score = pd.read_csv(r'Datasets/movies_dataset_v2_score.csv', sep = ',', header = 0)
-df_movies_votos = pd.read_csv(r'Datasets/movies_dataset_v2_votos.csv', sep = ',', header = 0)
-df_movies_actor = pd.read_csv(r'Datasets/movies_dataset_v2_actor.csv', sep = ',', header = 0)
-df_movies_director = pd.read_csv(r'Datasets/movies_dataset_v2_director.csv', sep = ',', header = 0)
+df_movies_mesydia = pd.read_csv(r'Datasets/Preprocesados/movies_dataset_v2_mesydia.csv', sep = ',', header = 0, parse_dates=["release_date"])
+df_movies_score = pd.read_csv(r'Datasets/Preprocesados/movies_dataset_v2_score.csv', sep = ',', header = 0)
+df_movies_votos = pd.read_csv(r'Datasets/Preprocesados/movies_dataset_v2_votos.csv', sep = ',', header = 0)
+df_movies_actor = pd.read_csv(r'Datasets/Preprocesados/movies_dataset_v2_actor.csv', sep = ',', header = 0)
+df_movies_director = pd.read_csv(r'Datasets/Preprocesados/movies_dataset_v2_director.csv', sep = ',', header = 0)
 df_movies_director=df_movies_director.loc[-df_movies_director.director.isna()]
-df_movies_recs = pd.read_csv(r'Datasets/movies_dataset_v2_recs.csv', sep = ',', header = 0)
+df_movies_recs = pd.read_csv(r'Datasets/Preprocesados/movies_dataset_v2_recs.csv', sep = ',', header = 0)
 
 # Funciones 
 @app.get('/') #ruta raíz
@@ -117,7 +108,7 @@ def cantidad_filmaciones_dia(dia:str):
 @app.get("/score_titulo/{titulo}")
 def score_titulo(titulo:str): 
     """
-    Esta funcion devuelve el título de la película consultada junto con el año de estreno y el score
+    Esta funcion devuelve el título de la película consultada junto con el año de estreno y la popularidad según TMDB (TheMoviesDataBase)
     """
     # se verifica si el titulo es un str
     if isinstance(titulo,str):
@@ -137,7 +128,7 @@ def score_titulo(titulo:str):
 @app.get("/votos_titulo/{titulo}")
 def votos_titulo(titulo:str):
     """
-    Esta funcion devuelve el promedio de votos de la pelicula junto con la cantidad de votos. En caso de ser una cantidad de votos menor a 2000, se informa solamente el incumplimiento de esta condición.
+    Esta funcion devuelve el promedio de votos de la pelicula junto con la cantidad de votos según TMDB (TheMoviesDataBase). En caso de ser una cantidad de votos menor a 2000, se informa solamente el incumplimiento de esta condición.
     """ 
     # se verifica si el titulo es un str
     if isinstance(titulo,str):
@@ -185,7 +176,7 @@ def get_actor(nombre_actor:str):
 @app.get("/get_director/{nombre_director}")
 def get_director(nombre_director:str):
     """
-    Esta funcion devuelve el director consultado junto el retorno total conseguido por sus películas y un detalle de sus películas con fecha de lanzamiento, retorno, costo y ganancia.
+    Esta funcion devuelve el director consultado junto el retorno total conseguido por sus películas y un detalle de sus películas con fecha de lanzamiento, retorno, presupuesto y recaudación.
     """
     if isinstance(nombre_director,str):
         nombre_director = nombre_director.lower() #se pasa a minuscula
@@ -215,26 +206,6 @@ def get_director(nombre_director:str):
 
 @app.get("/recomendacion/{titulo}")
 def recomendacion(titulo:str):
-    recs = df_movies_recs.loc[df_movies_recs.title.str.lower().str.contains(titulo), 'recs'].iloc[0]
+    recs = df_movies_recs.loc[df_movies_recs.title.str.lower().str.contains(titulo), 'recs'].iloc[0] #se filtra por el titulo y se extraen las recomendaciones
     recs = ast.literal_eval(recs)
     return {'lista recomendada': recs}
- 
-# Deta Details
-"""
-{
-        "name": "PI-JuanPabloPicasso",
-        "id": "",
-        "project": "default",
-        "runtime": "python3.10",
-        "endpoint": "",
-        "region": "us-east-1",
-        "dependencies": [
-                "fastapi",
-                "pandas",
-                "datetime",
-                "ast"
-        ],
-        "visor": "disabled",
-        "http_auth": "disabled"
-}
-"""
