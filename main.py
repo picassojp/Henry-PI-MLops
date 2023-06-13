@@ -17,7 +17,7 @@ app = FastAPI(
     title="Sistema de Recomendación de Películas",
     description=description,
     version="0.0.1",
-    contacto={
+    contact={
         "name": "Juan Pablo Picasso",
         "GitHub": "https://github.com/picassojp",
         "email": "picassojuanpablo@gmail.com",
