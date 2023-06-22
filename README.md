@@ -1,4 +1,6 @@
-# Proyecto Individual: Sistema de Recomendación de Películas
+<p align=center><img src=https://github.com/picassojp/Henry-PI-MLops/blob/14ba1945669abdc4d755ae407b5055d440a75da3/imagenes/myke-simon-atsUqIm3wxo-unsplash.jpg width="700px" height="600px"><p>
+
+# <h1 align=center>**`Proyecto Individual: Sistema de Recomendación de Películas`**</h1>
 
 Este repositorio es un proyecto individual cuyo objetivo es el desarrollo y despliegue de una API de recomendación de películas diseñada para proporcionar información diversa sobre películas, actores y directores. Ha sido construida utilizando el marco FastAPI y un conjunto de datos de películas estructurado y procesado con librerías de lenguaje Python. La API permite consultar información sobre películas, actores y directores a través de varias rutas y funcionalidades. Este proyecto fue desarrollado durante la etapa de Labs del _(bootcamp)_ de Henry. A continuación, se describen cada una de las etapas en las que se organizó el proyecto.
 
