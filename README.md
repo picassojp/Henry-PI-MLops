@@ -67,4 +67,4 @@ Se encuentra disponible una [demo](https://youtu.be/YZQAjoHNTKk) sobre el funcio
 Los _(datasets)_ utilizados se encuentran disponibles en esta [carpeta](https://drive.google.com/drive/folders/1dx1scrL8qucZNLqYr2nHYN5e5F3RoBUx?usp=sharing) de Google Drive, separados en originales (sin transformaciones) y los resultantes del preprocesamiento. El diccionario de los datos originales se puede consultar [aquí](https://docs.google.com/spreadsheets/d/1jj7hjkZvZUYnUsAt4mYjYtyhENWs94r4/edit?usp=sharing&ouid=103874252439240375729&rtpof=true&sd=true).
 
 **`Mantenimiento`**
-Este proyecto está mantenido por Juan Pablo Picasso. Si tienes alguna pregunta o encuentras algún problema, por favor, [contactame](www.linkedin.com/in/picassojp).
+Este proyecto está mantenido por Juan Pablo Picasso. Si tienes alguna pregunta o encuentras algún problema, por favor, [contactame](https://www.linkedin.com/in/picassojp).
